@@ -32,16 +32,19 @@ To pass a number of arguements and key values, we can use `*args` (stands for ar
 ```py
 def studentInfo(*args, **kwargs):
     my_name = args[0].format(kwargs['name'])  # My name is Mark
+    
     my_age = args[1].format(kwargs['age'])  # and I am 25
+    
     last_course = kwargs['courses'].pop().lower()  # physics
+    
     courses_string = ', '.join(kwargs['courses']).lower()  # history, science, biology
+    
     my_courses = args[2].format(courses_string)  # and I am taking history, science, biology
+    
     intro = f'{my_name} {my_age} {my_courses} & {last_course} courses.'
-    # My name is Mark and I am taking history, science, biology & physics courses.
-    print(intro)
+    
+    print(intro) #prints My name is Mark and I am taking history, science, biology & physics courses.
 
 
-studentInfo('My name is {}', 'and I am {}', 'and I am taking {}',
-            name='Mark', age=25,
-            courses=['History', 'Science', 'Biology', 'Physics'])
+studentInfo('My name is {}', 'and I am {}', 'and I am taking {}', name='Mark', age=25, courses=['History', 'Science', 'Biology', 'Physics'])
 ```
