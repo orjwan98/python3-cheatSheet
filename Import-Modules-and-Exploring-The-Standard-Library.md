@@ -139,7 +139,7 @@ print(today)  # prints 2019-06-08
 print(calendar.isleap(2015))  # prints False
 ```
 
-### `os` module: gives us access to the underlying operatin system. 
+### `os` module: gives us access to the underlying operating system. 
 
 ```py
 import os
