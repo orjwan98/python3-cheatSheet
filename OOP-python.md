@@ -386,11 +386,191 @@ print(emp2.num_of_emps)  # prints 2
 ```
 
 
+# ClassMethods and StaticMethods
+
+We'll be looking at regular methods, class methods, and instance methods. 
+
+Regular methods automatically take the instance (`self`) as the first argument, how can we change that to make it take the class argument instead? To do that, we're gonna be using class methods. And to turn a regular method into a class method, we add a **decorator** to the top called `@classmethod`. Let's allow the class to alter it's `raise_amount` variable dynamically by using a class method. 
+
+```py
+class Employee:
+    raise_amount = 1.04
+    num_of_emps = 0
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+        self.email = first + '.' + last + ' @company.com'
+        Employee.num_of_emps += 1  # each time an instance is initialized, this line will run.
+
+    def fullname(self):
+        return('{} {}'.format(self.first, self.last))
+
+    def apply_raise(self):
+        # this variable can be accessed on the class or the instance
+        return (self.pay * self.raise_amount)
+
+    @classmethod
+    # by convention, we use `cls` to refer to class. we can't use `class` bcuz it's a key word in Python
+    def set_raise_amount(cls, amount):
+        cls.raise_amount = amount #or you can do `Employee.raise_amount = amount`
 
 
+emp1 = Employee('Mark', 'Miles', 50000)
+emp2 = Employee('Frank', 'Famous', 50000)
+
+print(Employee.raise_amount)  # prints 1.04
+print(emp1.raise_amount)  # prints 1.04
+print(emp2.raise_amount)  # prints 1.04
+# cls arg is passed automatically, I only need to specify the `amount` arg
+Employee.set_raise_amount(1.06)
+print(Employee.raise_amount)  # prints 1.06
+print(emp1.raise_amount)  # prints 1.06
+print(emp2.raise_amount)  # prints 1.06
+
+```
+
+You can run classmethods from the instances as well, though it's not very heard of. Here's what it looks like nonetheless:
+
+```py
+class Employee:
+    raise_amount = 1.04
+    num_of_emps = 0
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+        self.email = first + '.' + last + ' @company.com'
+        Employee.num_of_emps += 1  # each time an instance is initialized, this line will run.
+
+    def fullname(self):
+        return('{} {}'.format(self.first, self.last))
+
+    def apply_raise(self):
+        # this variable can be accessed on the class or the instance
+        return (self.pay * self.raise_amount)
+
+    @classmethod
+    # by convention, we use `cls` to refer to class. we can't use `class` bcuz it's a key word in Python
+    def set_raise_amount(cls, amount):
+        Employee.raise_amount = amount
 
 
+emp1 = Employee('Mark', 'Miles', 50000)
+emp2 = Employee('Frank', 'Famous', 50000)
 
+print(Employee.raise_amount)  # prints 1.04
+print(emp1.raise_amount)  # prints 1.04
+print(emp2.raise_amount)  # prints 1.04
+# cls arg is passed automatically, I only need to specify the `amount` arg
+emp1.set_raise_amount(1.06) #using an instance to update the class
+print(Employee.raise_amount)  # prints 1.06
+print(emp1.raise_amount)  # prints 1.06
+print(emp2.raise_amount)  # prints 1.06
+```
+
+### Class methods as alternative constructors: 
+
+You can use these class methods to provide multiple ways to create our objects. What if we had someone who was using our `Employee` class and they had these strings that hold employees information seperated by hyphens. And they need to constantly parse the string before they create employees. So is there any way to just pass the string and create an employee out of that?
+
+```py
+class Employee:
+    raise_amount = 1.04
+    num_of_emps = 0
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+        self.email = first + '.' + last + ' @company.com'
+        Employee.num_of_emps += 1  # each time an instance is initialized, this line will run.
+
+    def fullname(self):
+        return('{} {}'.format(self.first, self.last))
+
+    def apply_raise(self):
+        # this variable can be accessed on the class or the instance
+        return (self.pay * self.raise_amount)
+
+    @classmethod
+    # by convention, we use `cls` to refer to class. we can't use `class` bcuz it's a key word in Python
+    def set_raise_amount(cls, amount):
+        Employee.raise_amount = amount
+
+    @classmethod
+    # by convention, we use `cls` to refer to class. we can't use `class` bcuz it's a key word in Python
+    def from_emps_strings(cls, emp_str):
+        first, last, pay = emp_str.split('-')
+        return cls(first, last, pay) #return a new Employee object => Employee(self, first, last, pay)
+
+
+emp1 = Employee('Mark', 'Miles', 50000)
+emp2 = Employee('Frank', 'Famous', 50000)
+
+emp_string_list = ['Jack-Jones-90000', 'Jamie-James-100000', 'Mackenzie-Blake-700000']
+
+new_emp_list = list(map(lambda string_ele: Employee.from_emps_strings(string_ele), emp_string_list))
+
+for eachEle in new_emp_list:
+    # prints Jack Jones 90000/ Jamie James 100000/ Mackenzie Blake 700000
+    print(eachEle.fullname(), eachEle.pay)
+```
+
+### Static Methods:
+
+Static methods don't pass anything automtically, neither the class nor the instance. Unlike class and instance methods. They're like regular functions and we include them in our classes because they have a logical connection in our class. Let's make a method that takes in a weekday and returns whether or not it was a weekday. 
+
+```py
+import datetime
+
+
+class Employee:
+    raise_amount = 1.04
+    num_of_emps = 0
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+        self.email = first + '.' + last + ' @company.com'
+        Employee.num_of_emps += 1  # each time an instance is initialized, this line will run.
+
+    def fullname(self):
+        return('{} {}'.format(self.first, self.last))
+
+    def apply_raise(self):
+        # this variable can be accessed on the class or the instance
+        return (self.pay * self.raise_amount)
+
+    @classmethod
+    # by convention, we use `cls` to refer to class. we can't use `class` bcuz it's a key word in Python
+    def set_raise_amount(cls, amount):
+        Employee.raise_amount = amount
+
+    @classmethod
+    # by convention, we use `cls` to refer to class. we can't use `class` bcuz it's a key word in Python
+    def from_emps_strings(cls, emp_str):
+        first, last, pay = emp_str.split('-')
+        return cls(first, last, pay)
+
+    @staticmethod
+    # if you don't access the class or the instance, it should be a staticmethod
+    def is_work_day(day):
+        if day.weekday() == 5 or day.weekday() == 6:
+            return False
+        return True
+
+
+emp1 = Employee('Mark', 'Miles', 50000)
+emp2 = Employee('Frank', 'Famous', 50000)
+
+my_date = datetime.date(2019, 6, 9)
+
+print(Employee.is_work_day(my_date))  # prints False
+
+```
 
 
 
