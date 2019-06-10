@@ -127,6 +127,7 @@ If you take a look at our piece of code above, when we call the method on the in
 
 But if we call the method from the class, we will need to specify which instance do we wish to pass as the `self` argument. 
 
+-----------------------------------
 
 # Class Variables
 
@@ -385,6 +386,7 @@ print(emp2.num_of_emps)  # prints 2
 
 ```
 
+-----------------------------------
 
 # ClassMethods and StaticMethods
 
@@ -572,11 +574,113 @@ print(Employee.is_work_day(my_date))  # prints False
 
 ```
 
+------------------------------------
+
+# Inheritance - Creating Subclasses
+
+Ineritance allows us to inherit attributes and methods from a parent class. This is useful because we can create subclasses and get all the functionality of our parent class and then overwrite or add completely new functionality without affecting the parent class at all.  
+
+Throughout this document about OOP, we have been talking about our `Employee` class. Let's say we wanted to create different types of Employees, so developers and managers. Now, developers and managers are still employees, and they definitely have first and last names, emails, and salaries. 
+
+Instead of copying our Employee class in its entirey when making our developers and managers, we can inherit all the attrs and methods directly from `Employee`. Like this:
+
+```py
+class Employee:
+    raise_amount = 1.04
+    num_of_emps = 0
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+        self.email = first + '.' + last + ' @company.com'
+        Employee.num_of_emps += 1  # each time an instance is initialized, this line will run.
+
+    def fullname(self):
+        return('{} {}'.format(self.first, self.last))
+
+    def apply_raise(self):
+        # this variable can be accessed on the class or the instance
+        return (self.pay * self.raise_amount)
+
+class Developer(Employee):
+     pass
+```
+
+Now that we have defined our subclass, let's try using some of the parent's attrs and methods on our subclass:
+
+```py
+class Employee:
+    raise_amount = 1.04
+    num_of_emps = 0
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+        self.email = first + '.' + last + '@company.com'
+        Employee.num_of_emps += 1  # each time an instance is initialized, this line will run.
+
+    def fullname(self):
+        return('{} {}'.format(self.first, self.last))
+
+    def apply_raise(self):
+        # this variable can be accessed on the class or the instance
+        return (self.pay * self.raise_amount)
 
 
+class Developer(Employee):
+    pass
 
 
+dev1 = Developer('Mark', 'Miles', 50000)
+dev2 = Developer('Frank', 'Famous', 50000)
 
+print(dev1.first)  # prints Mark
+print(dev2.email)  # prints Frank.Famous@company.com
+print(Developer.fullname(dev1))  # prints Mark Miles
+
+```
+
+To visulaize the relationship between a subclass and the parent class it inherits from, we can use the `help()` function:
+
+```py
+class Developer(Employee)
+ |  Method resolution order:
+ |      Developer
+ |      Employee
+ |      builtins.object
+ |  
+ |  Methods inherited from Employee:
+ |  
+ |  __init__(self, first, last, pay)
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |  
+ |  apply_raise(self)
+ |  
+ |  fullname(self)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors inherited from Employee:
+ |  
+ |  __dict__
+ |      dictionary for instance variables (if defined)
+ |  
+ |  __weakref__
+ |      list of weak references to the object (if defined)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes inherited from Employee:
+ |  
+ |  num_of_emps = 2
+ |  
+ |  raise_amount = 1.04
+
+```
+
+Things to keep note of:
+
+`Methods Resolution Order`:  This is the level of inheritance Python looks at. So, it starts with the subclass itself, then the parent class, then the object class. Which is the base class that other classes inherits from.
 
 
 
