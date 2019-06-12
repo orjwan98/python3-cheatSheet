@@ -680,7 +680,11 @@ class Developer(Employee)
 
 Things to keep note of:
 
-`Methods Resolution Order`:  This is the level of inheritance Python looks at. So, it starts with the subclass itself, then the parent class, then the object class. Which is the base class that other classes inherits from.
+`Methods Resolution Order`:  This is the level of inheritance Python looks at. So, it starts with the subclass itself, then the parent class, then the object class. The object class is the base class that other classes inherit from.
+
+
+
+
 
 
 
